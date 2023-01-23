@@ -36,6 +36,7 @@ ref.btn.disabled = isBtnActive;
 ref.btn.addEventListener('click', onBtnClick);
 
 function onBtnClick() {
+  timerCounter();
   timerId = setInterval(timerCounter, 1000);
 
   const delta = options.defaultDate - Date.now();
