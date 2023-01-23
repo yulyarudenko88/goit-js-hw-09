@@ -1,18 +1,31 @@
 const bodyRef = document.querySelector('body');
 const btnStartRef = document.querySelector('[data-start]');
-const btnStoptRef = document.querySelector('[data-stop]');
+const btnStopRef = document.querySelector('[data-stop]');
 
 const DELAY = 1000;
 let timerId = null;
+const isBtnActive = true;
 
 btnStartRef.addEventListener('click', onBtnStartClick);
-btnStoptRef.addEventListener('click', onBtnStopClick);
+btnStopRef.addEventListener('click', onBtnStopClick);
 
 function onBtnStartClick() {
-  timerId = setInterval (changeBodyBackgroundColor, DELAY);
+  changeBodyBackgroundColor();
+
+  btnStartRef.disabled = isBtnActive;
+  if (btnStartRef.disabled) {
+    btnStopRef.disabled = !isBtnActive;
+  };
+
+  timerId = setInterval(changeBodyBackgroundColor, DELAY);
 }
 
-function onBtnStopClick () {
+function onBtnStopClick() {
+  btnStopRef.disabled = isBtnActive;
+  if (btnStopRef.disabled) {
+    btnStartRef.disabled = !isBtnActive;
+  };
+
   clearInterval(timerId);
 }
 
