@@ -1,5 +1,6 @@
-import flatpickr from "flatpickr";
-import "flatpickr/dist/flatpickr.min.css";
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+import { Notify } from 'notiflix';
 
 const ref = {
   btn: document.querySelector('[data-start]'),
@@ -19,16 +20,16 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     if (selectedDates[0] < options.defaultDate) {
-      alert('Please choose a date in the future');
+      Notify.failure('Please choose a date in the future');
     } else {
       options.defaultDate = selectedDates[0];
-      ref.btn.disabled = !isBtnActive; 
+      ref.btn.disabled = !isBtnActive;
     }
-    console.log(selectedDates[0]);
+    // console.log(selectedDates[0]);
   },
 };
 
-flatpickr("#datetime-picker", options);
+flatpickr('#datetime-picker', options);
 
 ref.btn.disabled = isBtnActive;
 
@@ -38,19 +39,22 @@ function onBtnClick() {
   timerId = setInterval(timerCounter, 1000);
 
   const delta = options.defaultDate - Date.now();
-  console.log(delta)
+  // console.log(delta)
 }
 
 function timerCounter() {
   ref.btn.disabled = isBtnActive;
 
   const delta = options.defaultDate - Date.now();
-  console.log(convertMs(delta));
+  // console.log(convertMs(delta));
 
   const timerComponents = convertMs(delta);
   updateUI(timerComponents);
-  
-  
+
+  if (delta <= 0) {
+    clearInterval(timerId);
+    Notify.success('Time is over!');
+  }
 }
 
 function convertMs(ms) {
@@ -67,10 +71,13 @@ function convertMs(ms) {
   return { days, hours, minutes, seconds };
 }
 
-function updateUI({ days, hours, minutes, seconds }) {
-  ref.daysField.textContent = `${days}`;
-  ref.hoursField.textContent = `${hours}`;
-  ref.minutesField.textContent = `${minutes}`;
-  ref.secondsField.textContent = `${seconds}`;
+function addLeadingZero(value) {
+  return String(value).padStart(2, '0');
 }
 
+function updateUI({ days, hours, minutes, seconds }) {
+  ref.daysField.textContent = addLeadingZero(`${days}`);
+  ref.hoursField.textContent = addLeadingZero(`${hours}`);
+  ref.minutesField.textContent = addLeadingZero(`${minutes}`);
+  ref.secondsField.textContent = addLeadingZero(`${seconds}`);
+}
